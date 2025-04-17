@@ -1,6 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
@@ -42,7 +41,7 @@ def criarproj():
         "iconFile": None,
         "locale": "pt_BR",
         "workspaceId": 1169,
-        "name": "16-04 Automatizado2",
+        "name": "17-04 ",
         "projectConfig": {
             "color": "#7839EE",
             "icon": "initials"
@@ -55,17 +54,17 @@ def criarproj():
         print("✅ Projeto criado com sucesso!")
         print(response.json())
         return response.json().get("id")
-projeto = criarproj()
 
+projeto = criarproj()
 driver = webdriver.Chrome()
 wait = WebDriverWait(driver, 10)
 driver.get(f"https://validacao.mitralab.io/w/{workspace}/p/{projeto}")
 time.sleep(5)
 
-# Fazer Login
+# Fazer Login ===========================
 
-input_email = wait.until(EC.presence_of_element_located((By.ID, "login_form_email")))
-input_email.send_keys(email)
+email_Input = wait.until(EC.presence_of_element_located((By.ID, "login_form_email")))
+email_Input.send_keys(email)
 
 input_senha = driver.find_element(By.ID, "login_form_password")
 input_senha.send_keys(passw)
@@ -76,26 +75,49 @@ botao_login.click()
 
 time.sleep(3)
 
+# Entrar no projeto criado ============================
 driver.get(f"https://validacao.mitralab.io/w/{workspace}/p/{projeto}")
+time.sleep(2)
+while i < len(perg):
+    time.sleep(5)
+    inputIA = wait.until(EC.presence_of_element_located(
+        (By.XPATH, '//textarea[@placeholder="Send a new message..."]')))
+    inputIA.send_keys(perg[i])
+    time.sleep(1)
+    inputIA.send_keys(Keys.ENTER)
 
-inputIA = wait.until(EC.presence_of_element_located(
-    (By.XPATH, '//textarea[@placeholder="Send a new message..."]')))
-inputIA.send_keys(perg[i])
-inputIA.send_keys(Keys.ENTER)
-i += 1
+    print("Analisando a resposta")
+    time.sleep(5)
+    print("Ok")
 
+    waitIA = WebDriverWait(driver, 60)  # Espera até 30 segundos
 
-# Ver o texto grande
-"""
-- Mandar pergunta 1
-- Espera até aparecer a tool ou o JSON
----if Json : manda rodar a tool
------ if 
-- else 
-- Espera para apertar em executar a tool
-""""
+    waitIA.until_not(EC.presence_of_element_located(
+        (By.XPATH, '//span[contains(text(), "Analyzing your request...")]')
+    ))
+    print("Verificando se apareceu o botão ou JSON")
+    time.sleep(3)
+    print("Tendi")
+    # Depois que sumiu, faz as verificações
+    try:
+        # Tenta encontrar o botão "Execute plan"
+        botao_execute = driver.find_element(By.XPATH, '//span[text()="Execute plan"]')
+        botao_execute.click()
+        print("✅ Botão 'Execute plan' clicado!")
 
+    except:
+        try:
+            # Se não encontrou o botão, tenta encontrar um bloco de código
+            bloco_code = driver.find_element(By.XPATH, '//pre/code')
+            print("JSON vagabundo!")
+            inputIA = wait.until(EC.presence_of_element_located(
+                (By.XPATH, '//textarea[@placeholder="Send a new message..."]')))
+            inputIA.send_keys("execute a tool")
+            inputIA.send_keys(Keys.ENTER)
+        except:
+            print("⚠️ Nenhum botão nem JSON detectado.")
+    i += 1
+    print("Acabou o primeiro ciclo")
+    time.sleep(4)
 
 time.sleep(1000)
-
-
