@@ -5,16 +5,19 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import requests
 import time
+i = 0
 
-email = "luiz.nunes@mitralab.io"
+
+# Configs iniciais
+nomeProj = "17-04 DEV Vend"
+workspace = 1169
+email = "luiz.fellipe.nunes2016@gmail.com"
 passw = "Lipe123"
 perg = ("1- Crie um CRUD de vendedores, coloque atributos que são comuns para cadastros de vendedores",
         "2- Crie uma nova tela com inputs pra cada um dos campos da tabela vendedor para substituirem o formulário de edição, vamos dps clicar na list que fica nessa tela e abrir o modal com esses inputs para que a gente possa alterar os atributos dos vendedores",
         "3- Agora crie uma FK chamada “gerente” apontando pra uma nova tabela, crie uns membros pra gerente e adicione um input na tela editar vendedor pra gente poder alterar o gerente do vendedor com um droplist",
         "4- crie uma tabela de vendas, lance umas vendas exemplo e faça um dashboard com vendas por vendedor, vendas por dia e 3 cards: 1 com o total de vendas, 1 com volume de vendas e 1 com ticket médio. Coloque filtros de data, vendedor, produto e gerente",
         "5- adicione um quadrante aqui com a venda por gerente, coloque títulos pros gráficos")
-i = 0
-workspace = 1169
 
 def criarproj():
     print("Criando projeto...")
@@ -41,7 +44,7 @@ def criarproj():
         "iconFile": None,
         "locale": "pt_BR",
         "workspaceId": 1169,
-        "name": "17-04 ",
+        "name": nomeProj,
         "projectConfig": {
             "color": "#7839EE",
             "icon": "initials"
@@ -59,7 +62,7 @@ projeto = criarproj()
 driver = webdriver.Chrome()
 wait = WebDriverWait(driver, 10)
 driver.get(f"https://validacao.mitralab.io/w/{workspace}/p/{projeto}")
-time.sleep(5)
+time.sleep(4)
 
 # Fazer Login ===========================
 
@@ -79,6 +82,8 @@ time.sleep(3)
 driver.get(f"https://validacao.mitralab.io/w/{workspace}/p/{projeto}")
 time.sleep(2)
 while i < len(perg):
+    if i == 4:
+        driver.get(f"https://validacao.mitralab.io/w/{workspace}/p/{projeto}1?screenId=4")
     time.sleep(5)
     inputIA = wait.until(EC.presence_of_element_located(
         (By.XPATH, '//textarea[@placeholder="Send a new message..."]')))
@@ -117,7 +122,7 @@ while i < len(perg):
         except:
             print("⚠️ Nenhum botão nem JSON detectado.")
     i += 1
-    print("Acabou o primeiro ciclo")
+    print(f"Acabou o {i}º ciclo")
     time.sleep(4)
 
-time.sleep(1000)
+time.sleep(10000000)
