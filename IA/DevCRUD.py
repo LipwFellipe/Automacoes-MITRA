@@ -7,7 +7,6 @@ import requests
 import time
 i = 0
 
-
 # Configs iniciais
 nomeProj = "17-04 DEV Vend"
 workspace = 1169
